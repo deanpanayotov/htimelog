@@ -21,11 +21,43 @@ htimelogControllers.controller('PhoneDetailCtrl', ['$scope', '$routeParams', 'Ph
     };
   }]);
 
-htimelogControllers.controller("AuthorizeCtrl", ['$scope', '$location',
-  function($scope, $location) {
-    $scope.authorize = function() {
-      $location.path("/checkfolder")
-    };
+htimelogControllers.controller("AuthorizeCtrl", ['$scope', '$location', '$window', '$rootScope',
+  function($scope, $location, $window, $rootScope) {
+
+    var CLIENT_ID = '413534765896-1m71sh3gqqqqc4uht0ve7ircjrci96i1.apps.googleusercontent.com';
+
+    var SCOPES = ['https://www.googleapis.com/auth/drive'];
+
+    /**
+     * Initiate auth flow in response to user clicking authorize button.
+     *
+     * @param {Event} event Button click event.
+     */
+    $scope.authorize = function(){
+      gapi.auth.authorize(
+          {client_id: CLIENT_ID, scope: SCOPES, immediate: false},
+          handleAuthResult);
+      return false;
+    }
+
+    /**
+     * Handle response from authorization server.
+     *
+     * @param {Object} authResult Authorization result.
+     */
+    function handleAuthResult(authResult) {
+      if(authResult){
+        if(!authResult.error){
+          $rootScope.$apply(function () {
+            $location.path("/checkfolder")
+          });
+        }else{
+          $window.alert(authResult.error);
+        }
+      }else{
+        $window.alert("An error occurred!");
+      }
+    }
   }]);
 
 htimelogControllers.controller("CheckFolderCtrl", ['$scope', '$location',
