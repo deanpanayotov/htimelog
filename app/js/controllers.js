@@ -14,7 +14,7 @@ htimelogControllers.controller("LogTimeCtrl", ['$scope', '$location', '$window',
 
         var SCRIPT_ID = "Mi3wjaNsbgXzEAybwTrJz_F1cxYePCcw0";
 
-        var SCOPES = ['https://www.googleapis.com/auth/drive'];
+        var SCOPES = ['https://www.googleapis.com/auth/drive', 'https://www.googleapis.com/auth/drive.file', 'https://spreadsheets.google.com/feeds'];
 
         $window.init = function () {
             console.log("ddd");
@@ -29,7 +29,7 @@ htimelogControllers.controller("LogTimeCtrl", ['$scope', '$location', '$window',
         $scope.authorize = function () {
             console.log("ddd f");
             gapi.auth.authorize(
-                {client_id: CLIENT_ID, scope: SCOPES, immediate: false},
+                {client_id: CLIENT_ID, scope: SCOPES, immediate: true   },
                 $scope.handleAuthResult);
             return false;
         }
