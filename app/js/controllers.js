@@ -10,11 +10,17 @@ var htimelogControllers = angular.module('htimelogControllers', []);
 htimelogControllers.controller("LogTimeCtrl", ['$scope', '$location', '$window',
     function ($scope, $location, $window) {
 
-        var CLIENT_ID = '1048537626856-271aj2p8ljpsd8krp81ac4rrtm9eedqi.apps.googleusercontent.com';
+        var CLIENT_ID = '891544193306-ma06907h97ia91gdjm13ffve4hvdklmb.apps.googleusercontent.com';
 
-        var SCRIPT_ID = "Mi3wjaNsbgXzEAybwTrJz_F1cxYePCcw0";
+        var SCRIPT_ID = "MadYrfaDmNmdzHVvXGY39RqSmyG-wBho1";
 
         var SCOPES = ['https://www.googleapis.com/auth/drive', 'https://www.googleapis.com/auth/drive.file', 'https://spreadsheets.google.com/feeds'];
+
+        $scope.text="test";
+        $scope.category="test";
+
+        $scope.entries = [];
+        $scope.timestamp = 0;
 
         $window.init = function () {
             console.log("ddd");
@@ -29,7 +35,7 @@ htimelogControllers.controller("LogTimeCtrl", ['$scope', '$location', '$window',
         $scope.authorize = function () {
             console.log("ddd f");
             gapi.auth.authorize(
-                {client_id: CLIENT_ID, scope: SCOPES, immediate: true   },
+                {client_id: CLIENT_ID, scope: SCOPES, immediate: false   },
                 $scope.handleAuthResult);
             return false;
         }
@@ -52,11 +58,51 @@ htimelogControllers.controller("LogTimeCtrl", ['$scope', '$location', '$window',
         }
 
         $scope.getAllEntries = function() {
-            console.log("AAAA");
+            console.log("getAllEntries");
 
             var request = {
                 'function': 'getAllEntries'
             };
+            $scope.executeGAPIRequest(request, $scope.parseEntries);
+        }
+
+        $scope.getEntries = function() {
+            console.log("getEntries");
+
+            var request = {
+                'function': 'getEntries',
+                'parameters': [$scope.timestamp]
+            };
+            $scope.executeGAPIRequest(request, $scope.parseEntries);
+        }
+
+        $scope.putEntry = function() {
+            console.log("putEntry");
+            var request = {
+                'function': 'putEntry',
+                'parameters': [$scope.text, $scope.category, $scope.timestamp]
+            };
+            console.log("ts "+$scope.timestamp);
+            $scope.executeGAPIRequest(request, function(resp){
+                $scope.text = "";
+                $scope.category = "";
+                $scope.parseEntries(resp);
+            });
+        }
+
+        $scope.parseEntries = function(resp){
+            var result = JSON.parse(resp.response.result);
+            console.log(resp.response.result);
+            console.log(result);
+            console.log(result.entries);
+            for(var i=0; i< result.entries.length; i++){ //TODO why isn't foreach working?
+                $scope.entries[result.entries[i].id] = result.entries[i].data;
+            }
+            $scope.timestamp = result.timestamp;
+            $scope.$apply();
+        }
+
+        $scope.executeGAPIRequest = function(request, onSuccess){
 
             var op = gapi.client.request({
                 'root': 'https://script.googleapis.com',
@@ -72,12 +118,10 @@ htimelogControllers.controller("LogTimeCtrl", ['$scope', '$location', '$window',
                     var error = resp.error.details[0];
                     $window.alert('Script error message: ' + error.errorMessage);
                 } else {
-                    var result = resp.response.result;
-                    $window.alert(result);
+                    onSuccess(resp);
                 }
             });
         }
-
     }]);
 
 htimelogControllers.controller('PhoneListCtrl', ['$scope', 'Phone',
