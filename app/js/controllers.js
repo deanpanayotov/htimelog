@@ -9,11 +9,8 @@ var htimelogControllers = angular.module('htimelogControllers', []);
 
 htimelogControllers.controller("LogTimeCtrl", ['$scope', '$location', '$window',
     function ($scope, $location, $window) {
-
         var CLIENT_ID = '891544193306-ma06907h97ia91gdjm13ffve4hvdklmb.apps.googleusercontent.com';
-
         var SCRIPT_ID = "MadYrfaDmNmdzHVvXGY39RqSmyG-wBho1";
-
         var SCOPES = ['https://www.googleapis.com/auth/drive', 'https://www.googleapis.com/auth/drive.file', 'https://spreadsheets.google.com/feeds'];
 
         $scope.text="test";
@@ -23,28 +20,16 @@ htimelogControllers.controller("LogTimeCtrl", ['$scope', '$location', '$window',
         $scope.timestamp = 0;
 
         $window.init = function () {
-            console.log("ddd");
             $scope.$apply($scope.authorize);
         };
 
-        /**
-         * Initiate auth flow in response to user clicking authorize button.
-         *
-         * @param {Event} event Button click event.
-         */
         $scope.authorize = function () {
-            console.log("ddd f");
             gapi.auth.authorize(
                 {client_id: CLIENT_ID, scope: SCOPES, immediate: false   },
                 $scope.handleAuthResult);
             return false;
         }
 
-        /**
-         * Handle response from authorization server.
-         *
-         * @param {Object} authResult Authorization result.
-         */
         $scope.handleAuthResult = function(authResult) {
             if (authResult) {
                 if (!authResult.error) {
@@ -122,21 +107,4 @@ htimelogControllers.controller("LogTimeCtrl", ['$scope', '$location', '$window',
                 }
             });
         }
-    }]);
-
-htimelogControllers.controller('PhoneListCtrl', ['$scope', 'Phone',
-    function ($scope, Phone) {
-        $scope.phones = Phone.query();
-        $scope.orderProp = 'age';
-    }]);
-
-htimelogControllers.controller('PhoneDetailCtrl', ['$scope', '$routeParams', 'Phone',
-    function ($scope, $routeParams, Phone) {
-        $scope.phone = Phone.get({phoneId: $routeParams.phoneId}, function (phone) {
-            $scope.mainImageUrl = phone.images[0];
-        });
-
-        $scope.setImage = function (imageUrl) {
-            $scope.mainImageUrl = imageUrl;
-        };
     }]);
