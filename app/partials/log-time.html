@@ -20,20 +20,20 @@
         </table>
     </div>
     <hr>
-    <form class="row text-center" style="font-weight: bolder" autocomplete="on">
+    <div class="row text-center" style="font-weight: bolder">
         <div class="col-xs-5 col-xs-offset-1">
             <div>
                 Task
             </div>
-            <input type="text" ng-model="text">
+            <input type="text" ng-model="text" autocomplete="on">
         </div>
         <div class="col-xs-5">
             <div>
                 Category
             </div>
-            <input type="text" ng-model="category">
+            <input type="text" ng-model="category" autocomplete="on">
         </div>
-    </form>
+    </div>
     <hr>
     <row class="col-xs-10 col-xs-offset-1">
         <button class="btn-success col-xs-4 col-xs-offset-1" ng-click="putEntry()">
@@ -43,5 +43,8 @@
             Refresh
         </button>
     </row>
-
+    <row class="col-xs-12">
+        <hr>
+        <hr>
+    </row>
 </div>
